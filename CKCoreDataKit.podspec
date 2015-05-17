@@ -7,7 +7,7 @@ Pod::Spec.new do |spec|
   spec.authors    = { 'Kevin Chen' => 'xmkevinchen@gmail.com' }
   spec.license    = { :type => 'MIT', :file => 'LICENSE.md' }
   spec.source     = { :git => 'https://github.com/xmkevinchen/CKCoreDataKit.git',
-                      :tag => 'v#{s.version.to_s}' }
+                      :tag => spec.version.to_s }
 
   spec.ios.deployment_target = '8.0'
   spec.osx.deployment_target = '10.9'
