@@ -72,12 +72,18 @@ public class CKFetchRequest<T: NSManagedObject> {
             fetchRequest.fetchOffset = fetchOffset
         }
         
-        if let results = self.context.executeFetchRequest(fetchRequest, error: &error) as? [T] {
-            return CKFetchResult<T>(success: true, objects: results, error: nil)
-        } else {
-            println("======> Fetched with request \(fetchRequest) failed : \(error) <======")
-            return CKFetchResult<T>(success: false, objects: nil, error: error)
+        var fetchResult: CKFetchResult<T>!
+        
+        self.context.performBlockAndWait {
+            if let results = self.context.executeFetchRequest(self.fetchRequest, error: &error) as? [T] {
+                fetchResult = CKFetchResult<T>(success: true, objects: results, error: nil)
+            } else {
+                println("======> Fetched with request \(self.fetchRequest) failed : \(error) <======")
+                fetchResult = CKFetchResult<T>(success: false, objects: nil, error: error)
+            }
         }
+        
+        return fetchResult
     }
     
     public func count() -> Int {
