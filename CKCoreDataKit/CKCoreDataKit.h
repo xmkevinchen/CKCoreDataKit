@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Kevin Chen. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
 //! Project version number for CKCoreDataKit.
 FOUNDATION_EXPORT double CKCoreDataKitVersionNumber;
