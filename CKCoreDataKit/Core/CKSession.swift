@@ -36,10 +36,20 @@ public class CKSession {
         self.context.persistentStoreCoordinator = self.persistentStoreCoordinator
         self.context.mergePolicy = NSMergePolicy(mergeType: mergePolicy)
         
-        observer = NSNotificationCenter.defaultCenter().addObserverForName(NSManagedObjectContextDidSaveNotification, object: nil, queue: NSOperationQueue.mainQueue()) { notification in
+        let operationQueue: NSOperationQueue
+        if concurrencyType == .MainQueueConcurrencyType {
+            operationQueue = NSOperationQueue.mainQueue()
+        } else {
+            operationQueue = NSOperationQueue.currentQueue() != nil ? NSOperationQueue.currentQueue()! : NSOperationQueue.mainQueue()
+        }
+        
+        observer = NSNotificationCenter.defaultCenter().addObserverForName(NSManagedObjectContextDidSaveNotification, object: nil, queue: operationQueue) { notification in
             if let managedObjectContext = notification.object as? NSManagedObjectContext {
                 if managedObjectContext !== self.context {
-                    self.context.mergeChangesFromContextDidSaveNotification(notification)
+                    self.context.performBlockAndWait {
+                        self.context.mergeChangesFromContextDidSaveNotification(notification)
+                    }
+                    
                 }
             }
         }
