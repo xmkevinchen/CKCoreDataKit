@@ -25,9 +25,12 @@ public class CKSession {
         self.model = model
         self.persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: model.managedObjectModel)
         let url: NSURL? = (storeType == NSInMemoryStoreType) ? nil : model.url
-        var error: NSError?
-        self.persistentStoreCoordinator.addPersistentStoreWithType(storeType, configuration: nil, URL: url, options: options, error: &error);
-        assert(error == nil, "======> Adding persistance store error: \(error) <======")
+        
+        do {
+            try self.persistentStoreCoordinator.addPersistentStoreWithType(storeType, configuration: nil, URL: url, options: options)
+        } catch let error {
+            fatalError("======> Adding persistance store error: \(error) <======")
+        }
         
         self.context = NSManagedObjectContext(concurrencyType: concurrencyType)
         self.context.persistentStoreCoordinator = self.persistentStoreCoordinator
@@ -60,12 +63,14 @@ public class CKSession {
             //            println("context.updatedObject = \(self.context.updatedObjects)")
             //            println("context.deletedObject = \(self.context.deletedObjects)")
             
-            var error: NSError?
-            success = self.context.save(&error)
-            if !success {
+            do {
+                try self.context.save()
+                success = true
+            } catch let error {
                 self.context.rollback()
-                println("======> context transation error: \(error)")
+                print("======> context transation error: \(error)")
             }
+            
         }
         
         return success
@@ -81,10 +86,10 @@ public class CKSession {
     
     public func save<T: NSManagedObject>(object: T) {
         if let exist = context.objectRegisteredForID(object.objectID) {
-            println("========> object \(object) exists")
+            print("========> object \(exist) exists")
         } else {
             insert(object)
         }
     }
-            
+    
 }

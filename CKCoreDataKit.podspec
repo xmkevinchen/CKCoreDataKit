@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name       = 'CKCoreDataKit'
-  spec.version    = '0.0.1'
+  spec.version    = '0.5.1'
   spec.license    = 'MIT'
   spec.summary    = 'CoreData syntax wrapper written in Swift'
   spec.homepage   = 'https://github.com/xmkevinchen/CKCoreDataKit'

@@ -12,6 +12,6 @@ import CoreData
 public struct CKFetchResult <T: NSManagedObject> {
     public let success: Bool
     public let objects: [T]?
-    public let error: NSError?
+    public let error: ErrorType?
     
 }

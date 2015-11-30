@@ -10,28 +10,28 @@ import Foundation
 import CoreData
 
 public class CKSessionModel {
-
+    
     public var url: NSURL
     public var name: String
     public var bundle: NSBundle
     var directory: NSURL
     
     /**
-    Initialize session model
-    
-    :param: name      The name of CoreData Model file without extension, default is the App's name
-    :param: bundle    The bundle which includes the CoreData Model file, default is the main bundle
-    :param: directory The directory to save the file, default is the Application Documents directory
-    
-    :returns: 
-    */
+     Initialize session model
+     
+     :param: name      The name of CoreData Model file without extension, default is the App's name
+     :param: bundle    The bundle which includes the CoreData Model file, default is the main bundle
+     :param: directory The directory to save the file, default is the Application Documents directory
+     
+     :returns:
+     */
     public init(name: String = CKSessionModel.applicationName(),
         bundle: NSBundle = NSBundle.mainBundle(),
         directory:NSURL = CKSessionModel.applicationDocumentDirectory()) {
-        self.name = name
-        self.bundle = bundle
-        self.directory = directory
-        self.url = self.directory.URLByAppendingPathComponent("\(name).sqlite")
+            self.name = name
+            self.bundle = bundle
+            self.directory = directory
+            self.url = self.directory.URLByAppendingPathComponent("\(name).sqlite")
     }
     
     var managedObjectModel:NSManagedObjectModel {
@@ -55,10 +55,14 @@ public class CKSessionModel {
     }
     
     private class func applicationDocumentDirectory() -> NSURL {
-        var error: NSError?
-        let url = NSFileManager().URLForDirectory(NSSearchPathDirectory.DocumentDirectory, inDomain: NSSearchPathDomainMask.UserDomainMask, appropriateForURL: nil, create: true, error: &error)
-        assert(url != nil, "======> Looking up Documents Directory error: \(error) <======")
-        return url!
+        
+        do {
+            let url = try NSFileManager().URLForDirectory(NSSearchPathDirectory.DocumentDirectory, inDomain: NSSearchPathDomainMask.UserDomainMask, appropriateForURL: nil, create: true)
+            return url
+        } catch let error {
+            fatalError("======> Looking up Documents Directory error: \(error) <======")
+        }
+        
     }
     
 }

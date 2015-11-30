@@ -27,7 +27,7 @@ public class CKFetchRequest<T: NSManagedObject> {
     }
     
     public func filter(predicateFormat: String, _ args: CVarArgType...) -> CKFetchRequest<T> {
-        var predicate = NSPredicate(format: predicateFormat, arguments: getVaList(args))
+        let predicate = NSPredicate(format: predicateFormat, arguments: getVaList(args))
         
         return filter(predicate)
     }
@@ -39,7 +39,7 @@ public class CKFetchRequest<T: NSManagedObject> {
     }
     
     public func sort(property: String, ascending: Bool = true) -> CKFetchRequest<T> {
-        var sortDescriptor = NSSortDescriptor(key: property, ascending: ascending)
+        let sortDescriptor = NSSortDescriptor(key: property, ascending: ascending)
         
         return sort(sortDescriptor)
     }
@@ -60,8 +60,8 @@ public class CKFetchRequest<T: NSManagedObject> {
     }
     
     public func fetch() -> CKFetchResult<T> {
-        var error: NSError?
-        var predicate = NSCompoundPredicate.andPredicateWithSubpredicates(predicates)
+        
+        let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         fetchRequest.predicate = predicate
         fetchRequest.sortDescriptors = sortDescriptors
         if let fetchLimt = fetchLimit {
@@ -75,19 +75,28 @@ public class CKFetchRequest<T: NSManagedObject> {
         var fetchResult: CKFetchResult<T>!
         
         self.context.performBlockAndWait {
-            if let results = self.context.executeFetchRequest(self.fetchRequest, error: &error) as? [T] {
-                fetchResult = CKFetchResult<T>(success: true, objects: results, error: nil)
-            } else {
-                println("======> Fetched with request \(self.fetchRequest) failed : \(error) <======")
+            
+            do {
+                
+                if let results = try self.context.executeFetchRequest(self.fetchRequest) as? [T] {
+                    fetchResult = CKFetchResult<T>(success: true, objects: results, error: nil)
+                } else {
+                    fetchResult = CKFetchResult<T>(success: false, objects: nil, error: nil)
+                }
+                
+            } catch let error {
+                print("======> Fetched with request \(self.fetchRequest) failed : \(error) <======")
                 fetchResult = CKFetchResult<T>(success: false, objects: nil, error: error)
             }
+            
+            
         }
         
         return fetchResult
     }
     
     public func count() -> Int {
-        var predicate = NSCompoundPredicate.andPredicateWithSubpredicates(predicates)
+        let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         fetchRequest.predicate = predicate
         
         if let fetchLimt = fetchLimit {
@@ -99,9 +108,11 @@ public class CKFetchRequest<T: NSManagedObject> {
         }
         
         var error: NSError?
-        var count = self.context.countForFetchRequest(self.fetchRequest, error: &error)
+        
+        
+        let count = self.context.countForFetchRequest(self.fetchRequest, error: &error)
         if let exists = error {
-            println("======> Count with request \(fetchRequest) failed : \(error) <======")
+            print("======> Count with request \(fetchRequest) failed : \(exists) <======")
         }
         
         return count
