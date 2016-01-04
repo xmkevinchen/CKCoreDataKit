@@ -10,7 +10,7 @@ Pod::Spec.new do |spec|
                       :tag => '0.5.2' }
 
   spec.ios.deployment_target = '8.0'
-  spec.osx.deployment_target = '10.9'
+  # spec.osx.deployment_target = '10.9'
 
   spec.source_files = 'CKCoreDataKit/CKCoreDataKit.h', 'CKCoreDataKit/**/*.{h,m,swift}'
   spec.public_header_files = ['CKCoreDataKit/CKCoreDataKit.h']
