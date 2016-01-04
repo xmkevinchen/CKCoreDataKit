@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import CocoaLumberjack
 
 public class CKSession {
     
@@ -78,7 +79,7 @@ public class CKSession {
                 success = true
             } catch let error {
                 self.context.rollback()
-                print("======> context transation error: \(error)")
+                DDLogError("======> context transation error: \(error)")
             }
             
         }
@@ -96,7 +97,7 @@ public class CKSession {
     
     public func save<T: NSManagedObject>(object: T) {
         if let exist = context.objectRegisteredForID(object.objectID) {
-            print("========> object \(exist) exists")
+            DDLogVerbose("========> object \(exist) exists")
         } else {
             insert(object)
         }

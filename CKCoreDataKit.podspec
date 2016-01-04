@@ -16,5 +16,6 @@ Pod::Spec.new do |spec|
   spec.public_header_files = ['CKCoreDataKit/CKCoreDataKit.h']
   spec.requires_arc = true
   spec.frameworks   = 'CoreData'
+  spec.dependency "CocoaLumberjack/Swift"
 
 end

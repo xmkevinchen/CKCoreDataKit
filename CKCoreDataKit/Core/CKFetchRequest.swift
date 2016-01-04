@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import CocoaLumberjack
 
 public class CKFetchRequest<T: NSManagedObject> {
     
@@ -85,7 +86,7 @@ public class CKFetchRequest<T: NSManagedObject> {
                 }
                 
             } catch let error {
-                print("======> Fetched with request \(self.fetchRequest) failed : \(error) <======")
+                DDLogError("======> Fetched with request \(self.fetchRequest) failed : \(error) <======")
                 fetchResult = CKFetchResult<T>(success: false, objects: nil, error: error)
             }
             
@@ -112,7 +113,7 @@ public class CKFetchRequest<T: NSManagedObject> {
         
         let count = self.context.countForFetchRequest(self.fetchRequest, error: &error)
         if let exists = error {
-            print("======> Count with request \(fetchRequest) failed : \(exists) <======")
+            DDLogError("======> Count with request \(fetchRequest) failed : \(exists) <======")
         }
         
         return count
